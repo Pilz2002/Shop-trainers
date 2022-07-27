@@ -9,6 +9,7 @@ import "swiper/css/bundle";
 const cx = classNames.bind(styles);
 
 function SliderItem({ imgList }) {
+  
   return (
     <div className={cx("wrapper")}>
       <Swiper
@@ -23,7 +24,6 @@ function SliderItem({ imgList }) {
         autoplay
         navigation={false}
         modules={[Pagination, Navigation, Autoplay]}
-        className="mySwiper"
       >
         {imgList.map((item, index) => {
           return (

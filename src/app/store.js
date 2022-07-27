@@ -1,12 +1,14 @@
-import { configureStore } from '@reduxjs/toolkit'
-import menuReducer from '@/Pages/HomePage/components/ProductSlider/components/Menu/MenuSlice'
-import menPageReducer from '@/Pages/MenPage/MenPageSlice'
-import productReducer from '@/Pages/components/Product/productSlice'
-import cartReducer from '@/Pages/Cart/cartSlice'
-import registerPageReducer from '@/Pages/RegisterPage/registerPageSlice'
-import loginPageReducer from '@/Pages/LoginPage/loginPageSlice'
-import pagesReducer from '@/Pages/pagesSlice'
-
+import cartReducer from "@/Pages/Cart/cartSlice";
+import productReducer from "@/Pages/components/Product/productSlice";
+import menuReducer from "@/Pages/HomePage/components/ProductSlider/components/Menu/MenuSlice";
+import menPageReducer from "@/Pages/MenPage/MenPageSlice";
+import loginPageReducer from "@/Pages/LoginPage/loginPageSlice";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import createSagaMiddleware from "redux-saga";
+import rootSaga from "./rootSaga";
+import pagesReducer from "@/Pages/pagesSlice";
+const sagaMiddleware = createSagaMiddleware();
+const middleware = [...getDefaultMiddleware({ thunk: false }), sagaMiddleware];
 
 export const store = configureStore({
   reducer: {
@@ -14,9 +16,9 @@ export const store = configureStore({
     menPageReducer,
     productReducer,
     cartReducer,
-    registerPageReducer,
-    loginPageReducer,
     pagesReducer,
-  }
-})
-
+    loginPageReducer
+  },
+  middleware,
+});
+sagaMiddleware.run(rootSaga);

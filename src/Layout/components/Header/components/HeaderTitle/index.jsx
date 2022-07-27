@@ -1,5 +1,6 @@
 import { removeProduct, selectListProduct } from "@/Pages/Cart/cartSlice";
-import { selectLoginInfo } from "@/Pages/LoginPage/loginPageSlice";
+import { logout, selectIsLogin, selectUserInfo } from "@/Pages/LoginPage/loginPageSlice";
+import { getBeforeUrl } from "@/Pages/pagesSlice";
 import {
   faCartShopping,
   faMagnifyingGlass,
@@ -15,26 +16,27 @@ import { Link } from "react-router-dom";
 import logo from "./assets/logo-mona.png";
 import { ButtonTippy } from "./components";
 import styles from "./HeaderTitle.module.scss";
-import { logout } from "@/Pages/LoginPage/loginPageSlice";
-import { getBeforeUrl } from "@/Pages/pagesSlice";
 
 const cx = className.bind(styles);
 
 function HeaderTitle() {
   const dispatch = useDispatch();
   const listProduct = useSelector(selectListProduct);
-  const loginInfo = useSelector(selectLoginInfo);
+  const isLogin = useSelector(selectIsLogin);
+  const userInfo = useSelector(selectUserInfo);
   useEffect(() => {
     dispatch(getBeforeUrl(window.location.pathname));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [window.location.pathname]);
+
+  }, [dispatch]);
 
   const handleRemoveProduct = (index) => {
     dispatch(removeProduct(index));
   };
+
   const handleLogout = () => {
     dispatch(logout());
   };
+
   return (
     <div className={cx("header-title")}>
       <div className={cx("logo")}>
@@ -47,21 +49,16 @@ function HeaderTitle() {
         </button>
       </div>
       <div className={cx("login-resgister")}>
-        {loginInfo.isLogin ? (
-          <ButtonTippy icon={faUserLarge} label={"Tài khoản"}>
+        {isLogin ? (
+          <ButtonTippy icon={faUserLarge} label={userInfo.userName}>
             <div className={cx("user")}>
-              <Link state={{}} to="/user/order" className="user-item">
+              <Link to="/user/order" className="user-item">
                 <Button className={cx("button")}>Đơn hàng</Button>
               </Link>
-              <Link
-                state={{}}
-                to="/user/account/profile"
-                className="user-item"
-                style={{ color: "#000" }}
-              >
+              <Link to="/user/account/profile" className="user-item" style={{ color: "#000" }}>
                 <Button className={cx("button")}>Thông tin tài khoản</Button>
               </Link>
-              <Link state={{}} to="/user/account/address" className="user-item">
+              <Link to="/user/account/address" className="user-item">
                 <Button className={cx("button")}>Địa chỉ</Button>
               </Link>
               <Link to="/" className="user-item">

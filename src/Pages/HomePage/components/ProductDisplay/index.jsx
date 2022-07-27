@@ -1,17 +1,24 @@
 import classNames from "classnames/bind";
 import styles from './ProductDisplay.module.scss'
 import { ProductDisplayItem } from "./components";
-import { laboren, antem, tempora } from "@/assets/images/Title";
-import { laborenProduct, antemProduct, temporaProduct } from "@/assets/images/Shoes/DisplayShoes";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const cx = classNames.bind(styles)
 
 function ProductDisplay() {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    axios.get("https://shop-trainers-api.herokuapp.com/api/title").then((response) => {
+      setData(response.data)
+    });
+  }, []);
   return ( 
     <div className={cx('wrapper')}>
-      <ProductDisplayItem titleURL={laboren} productURL={laborenProduct} />
-      <ProductDisplayItem titleURL={antem} productURL={antemProduct} />
-      <ProductDisplayItem titleURL={tempora} productURL={temporaProduct} />
+      {data.map((item, index) => {
+        const { titleUrl, productUrl } = item
+        return <ProductDisplayItem key={index} titleURL={titleUrl} productURL={productUrl} />
+      })}
     </div>
   );
 }

@@ -1,66 +1,30 @@
+import axios from "axios";
 import classNames from "classnames/bind";
-import styles from "./Slider.module.scss";
-import { useSelector } from 'react-redux'
-import { selectValue } from '../Menu/MenuSlice'
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { selectValue } from "../Menu/MenuSlice";
 import { SliderItem } from "./components";
-import {
-  productSliderImg1,
-  productSliderImg2,
-  productSliderImg3,
-  productSliderImg4,
-  productSliderImg5,
-  productSliderImg6,
-  productSliderImg7,
-  productSliderImg8,
-  productSliderImg9,
-  productSliderImg10,
-  productSliderImg11,
-  productSliderImg12,
-  productSliderImg13,
-  productSliderImg14,
-  productSliderImg15,
-  productSliderImg16,
-} from "@/assets/images/Shoes/ProductSlider";
+import styles from "./Slider.module.scss";
 
 const cx = classNames.bind(styles);
 
 function Slider() {
-  const value = useSelector(selectValue)
-  const imgList = [
-    [
-      productSliderImg1,
-      productSliderImg2,
-      productSliderImg3,
-      productSliderImg4,
-      productSliderImg5,
-      productSliderImg6,
-      productSliderImg7,
-      productSliderImg8,
-    ],
-    [
-      productSliderImg9,
-      productSliderImg10,
-      productSliderImg11,
-      productSliderImg12,
-      productSliderImg13,
-      productSliderImg14,
-      productSliderImg15,
-      productSliderImg16,
-    ],
-    [
-      productSliderImg1,
-      productSliderImg2,
-      productSliderImg3,
-      productSliderImg4,
-      productSliderImg5,
-      productSliderImg6,
-      productSliderImg7,
-      productSliderImg8,
-    ],
-  ];
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    axios.get("https://shop-trainers-api.herokuapp.com/api/product").then((response) => {
+      axios.get("https://shop-trainers-api.herokuapp.com/api/men").then(res => {
+        
+        setData(() => {
+          return []
+        })
+      })
+    })
+  }, [])
+
+  const value = useSelector(selectValue);
   return (
     <div className={cx("wrapper")}>
-      <SliderItem imgList={imgList[value]} />
+      {data.length !== 0 && <SliderItem imgList={data[value]} />}
     </div>
   );
 }

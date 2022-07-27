@@ -1,17 +1,11 @@
-import { Routes, BrowserRouter as Router, Route } from "react-router-dom";
+import { Fragment } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { MainLayout } from "./Layout";
 import { publicRoutes } from "./routes";
-import { Fragment } from "react";
-import { useEffect, useState } from "react";
-import axios from "axios";
+
 
 function App() {
-  const [data, setData] = useState("");
-  useEffect(() => {
-    axios.get("https://shop-trainers-api.herokuapp.com/data").then((response) => {
-      console.log(response);
-    });
-  }, []);
+  
   return (
     <Router>
       <Routes>

@@ -1,18 +1,23 @@
+import axios from "axios";
 import classNames from "classnames/bind";
-import styles from './Slider.module.scss'
-import { slide1, slide2, slide3 } from '@/assets/images/Slider'
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper';
-import 'swiper/css';
-import 'swiper/css/bundle'
+import { useEffect, useState } from "react";
+import { Autoplay, EffectFade, Navigation, Pagination } from "swiper";
+import "swiper/css";
+import "swiper/css/bundle";
+import { Swiper, SwiperSlide } from "swiper/react";
+import styles from "./Slider.module.scss";
 
-const cx = classNames.bind(styles)
-
-
+const cx = classNames.bind(styles);
 
 function Slider() {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    axios.get("https://shop-trainers-api.herokuapp.com/api/banner").then((response) => {
+      setData(response.data);
+    });
+  }, []);
   return (
-    <div className={cx('wrapper')}>
+    <div className={cx("wrapper")}>
       <Swiper
         spaceBetween={30}
         loop
@@ -29,10 +34,13 @@ function Slider() {
         modules={[Autoplay, Pagination, Navigation, EffectFade]}
         className="mySwiper"
       >
-        <SwiperSlide><img src={slide1} alt="" /></SwiperSlide>
-        <SwiperSlide><img src={slide2} alt="" /></SwiperSlide>
-        <SwiperSlide><img src={slide3} alt="" /></SwiperSlide>
-  
+        {data.map((item, index) => {
+          return (
+            <SwiperSlide key={index}>
+              <img src={item.url} alt="" />
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </div>
   );

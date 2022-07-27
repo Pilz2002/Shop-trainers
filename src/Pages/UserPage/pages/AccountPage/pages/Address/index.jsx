@@ -1,77 +1,165 @@
+import { selectUserInfo } from "@/Pages/LoginPage/loginPageSlice";
 import { MainLayout } from "@/Pages/UserPage/pages/layout";
+import axios from "axios";
 import classNames from "classnames/bind";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Header } from "../components";
 import styles from "./Address.module.scss";
 import { Modal, UserInfo } from "./components";
 
-
 const cx = classNames.bind(styles);
 
 function Address() {
+  // get loginId
+  const userInfo = useSelector(selectUserInfo);
+  const loginId = userInfo._id;
 
-  const [defaultAddress, setDefaultAddress] = useState(0);
-  const [isOpenModal , setsIsOpenModal ] = useState(false)
+  // local state
+  const [data, setData] = useState([]);
+  const [isOpenModal, setsIsOpenModal] = useState(false);
+  const [modalData, setModalData] = useState({});
+  const [fullName, setFullName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  const callApi = useCallback(() => {
+    axios
+      .get(`http://localhost:5000/user/me/${loginId}`)
+      .then((response) => {
+        const { address, fullName, phoneNumber } = response.data;
+        if (fullName) {
+          setFullName(fullName);
+        }
+        if (phoneNumber) {
+          setPhoneNumber(phoneNumber);
+        }
+        setData(address);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [loginId]);
   const handleSetDefault = (index) => {
-    setDefaultAddress(index);
+    setData((prev) => {
+      const arr = prev.map((item) => {
+        return { ...item, isDefault: false };
+      });
+      arr[index].isDefault = true;
+      axios.put(`http://localhost:5000/user/update/${loginId}`, { address: arr });
+      return arr;
+    });
   };
   const handleOpenModal = () => {
-    setsIsOpenModal(true)
+    setModalData({ phoneNumber, fullName });
+    setsIsOpenModal(true);
   };
   const handleCloseModal = () => {
-    setsIsOpenModal(false)
+    setsIsOpenModal(false);
+  };
+  const handleFinishModal = (newData) => {
+    setData((prev) => {
+      const { isDefault } = newData;
+      let arr = [];
+      if (isDefault) {
+        arr = prev.map((item) => {
+          return { ...item, isDefault: false };
+        });
+        arr = [...arr, newData];
+      } else {
+        arr = [...prev, newData];
+      }
+      axios.put(`http://localhost:5000/user/update/${loginId}`, { address: arr });
+      return arr;
+    });
+  };
+  const handleSaveFixInfo = (newData) => {
 
-  }
-  const data = [
-    {
-      fullName: "Dương Quý Vinh",
-      email: "nguyenhanhhp1974@gmail.com",
-      address:
-        "95/24 Đông Trung Hành ,Trung Hành 8, Phường Đằng Lâm Phường Đằng Lâm, Quận Hải An, Hải Phòng 1",
-      phoneNumber: "0338861820",
-    },
-    {
-      fullName: "Dương Quý Vinh",
-      email: "nguyenhanhhp1974@gmail.com",
-      address:
-        "95/24 Đông Trung Hành ,Trung Hành 8, Phường Đằng Lâm Phường Đằng Lâm, Quận Hải An, Hải Phòng 2",
-      phoneNumber: "0338861820",
-    },
-  ];
+    const { index, fullName, phoneNumber, isDefault, address } = newData;
+    const data = { fullName, phoneNumber, isDefault, address };
+    setData((prev) => {
+      prev.splice(index, 1, data);
+      let arr = []
+      if(isDefault) {
+        arr = prev.map((item) => {
+          return { ...item, isDefault: false };
+        });
+        arr[index].isDefault = isDefault;
+      }
+      else {
+        arr = [...prev]
+      }
+      axios
+        .put(`http://localhost:5000/user/update/${loginId}`, { address: arr })
+        .then(() => callApi());
+      return arr;
+    });
+  };
+  const handleFixInfo = (data) => {
+    setModalData(data);
+    setsIsOpenModal(true);
+  };
+  const handleDelAddress = (index) => {
+    setData((prev) => {
+      const arr = prev.filter((item, i) => i !== index)
+      
+      axios.put(`http://localhost:5000/user/update/${loginId}`, { address: arr }).then(() => {
+        callApi();
+      });
+      return arr;
+    });
+  };
+  useEffect(() => {
+    callApi();
+  }, [callApi]);
+  useEffect(() => {
+    setModalData({ fullName, phoneNumber });
+  }, [fullName, phoneNumber]);
   return (
     <MainLayout>
-      <Header
-        title="Địa Chỉ Của Tôi"
-        btnTitle="Thêm địa chỉ mới"
-        onClick={handleOpenModal}
-      />
-
+      <Header title="Địa Chỉ Của Tôi" btnTitle="Thêm địa chỉ mới" onClick={handleOpenModal} />
       <div className={cx("wrapper")}>
-        <Modal open={isOpenModal} onClose={handleCloseModal} />
+        {isOpenModal && (
+          <Modal
+            open={isOpenModal}
+            onClose={handleCloseModal}
+            onFinish={handleFinishModal}
+            modalData={modalData}
+          />
+        )}
         {data.map((userInfo, index) => {
-          const { fullName, email, address, phoneNumber } = userInfo;
-          const isDefault = index === defaultAddress;
+          const { fullName, address, phoneNumber } = userInfo;
           return (
             <div className={cx("container")} key={index}>
               <div className={cx("info")}>
-                <UserInfo
-                  fullName={fullName}
-                  email={email}
-                  address={address}
-                  phoneNumber={phoneNumber}
-                />
+                <UserInfo fullName={fullName} address={address} phoneNumber={phoneNumber} />
               </div>
               <div className={cx("setting")}>
                 <div className={cx("action")}>
-                  <button className={cx("fix")}>Sửa</button>
-                  <button className={cx("delete")}>Xoá</button>
+                  <button
+                    className={cx("fix")}
+                    onClick={() =>
+                      handleFixInfo({
+                        index,
+                        fullName,
+                        phoneNumber,
+                        address,
+                        isDefault: userInfo.isDefault,
+                        onChange: handleSaveFixInfo
+                      })
+                    }
+                  >
+                    Sửa
+                  </button>
+                  <button className={cx("delete")} onClick={() => handleDelAddress(index)}>
+                    Xoá
+                  </button>
                 </div>
                 <button
                   className={cx("default")}
                   onClick={() => handleSetDefault(index)}
-                  style={isDefault ? { cursor: "default" } : {}}
+                  style={userInfo.isDefault ? { cursor: "default" } : {}}
                 >
-                  {isDefault ? "Mặc định" : "Thiết lập mặc định"}
+                  {userInfo.isDefault ? "Mặc định" : "Thiết lập mặc định"}
                 </button>
               </div>
             </div>

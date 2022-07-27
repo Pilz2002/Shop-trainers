@@ -1,13 +1,10 @@
-import { login } from "@/Pages/LoginPage/loginPageSlice";
+import axios from "axios";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "../components";
-import { register, selectLoginInfo } from "./registerPageSlice";
+
 
 function RegisterPage() {
-  const loginInfo = useSelector(selectLoginInfo);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [registerInfo, setRegisterInfo] = useState({
     email: "",
@@ -23,24 +20,25 @@ function RegisterPage() {
   const handleSubmit = () => {
     const { password, repassword, email, userName } = registerInfo;
     if (password === repassword) {
-      const isRepeat = loginInfo.some((item) => {
-        return item.email === email;
-      });
-      if (isRepeat) {
-        alert("Email đã tồn tại");
-      } else {
-        dispatch(
-          register({
-            email,
-            userName,
-            password,
-          })
-        );
-        dispatch(login({ email, password }));
-        navigate("/", { replace: true });
-      }
+      axios.post("http://localhost:5000/auth/register", { password, email, userName })
+      .then(response => {
+        if(response.data.message) {
+          alert(response.data.message);
+        }
+        else {
+          return axios.post("http://localhost:5000/user/create", {email, userName, loginId: response.data._id})
+        }
+      })
+      .then(response => {
+        if(response) {
+          navigate("/login", { replace: true })
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
     } else {
-      alert("false");
+      alert("Vui lòng nhập đúng mật khẩu");
     }
   };
   const inputFields = [
@@ -70,7 +68,7 @@ function RegisterPage() {
     },
     {
       label: "Nhập lại mật khẩu",
-      placeholder: "Nhập password",
+      placeholder: "Nhập lại mật khẩu",
       value: registerInfo.repassword,
       name: "repassword",
       type: "password",

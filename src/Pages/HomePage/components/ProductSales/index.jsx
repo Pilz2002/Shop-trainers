@@ -1,33 +1,25 @@
-import classNames from "classnames/bind";
-import styles from "./ProductSales.module.scss";
-import { HeaderOnly } from "../Layout";
-import { imgSaleList } from "@/assets/images/Sales";
+import { Button } from '@/components';
 import { Product } from "@/Pages/components";
-
-import { Button } from '@/components'
+import axios from "axios";
+import classNames from "classnames/bind";
+import { useEffect, useState } from "react";
+import { HeaderOnly } from "../Layout";
+import styles from "./ProductSales.module.scss";
 
 const cx = classNames.bind(styles);
 
 function ProductSales() {
-  const ListName = [
-    "Converse X Suicidal Tendencies Long",
-    "Converse Metal Cons Pull Over Hoodie",
-    "Converse Star Chevron Jogger",
-    "Converse Collegiate Text SS Tee",
-    "CSport Duffel",
-    "Lil Duffel",
-    "Speed 2 Backpack",
-    "Poly Chuck Plus 1.0",
-  ];
-  const data = imgSaleList.map((item, index) => {
-    return {
-      url: item,
-      name: ListName[index],
-      price: 100000,
-      discount: 50,
-    };
-  });
-
+  const [data, setData] = useState([])
+  useEffect(() => {
+    axios.get("https://shop-trainers-api.herokuapp.com/api/product").then((response) => {
+      axios.get("https://shop-trainers-api.herokuapp.com/api/sales").then(res => {
+        const arr =  response.data.filter(item => {
+          return res.data.includes(item.id)
+        })
+        setData(arr)
+      })
+    })
+  }, [])
   return (
     <HeaderOnly title="Sản phẩm giảm giá">
       <div className={cx('wrapper')}>
