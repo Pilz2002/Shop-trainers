@@ -10,21 +10,29 @@ const cx = classNames.bind(styles);
 
 function Slider() {
   const [data, setData] = useState([]);
-  useEffect(() => {
-    axios.get("https://shop-trainers-api.herokuapp.com/api/product").then((response) => {
-      axios.get("https://shop-trainers-api.herokuapp.com/api/men").then(res => {
-        
-        setData(() => {
-          return []
-        })
-      })
-    })
-  }, [])
-
   const value = useSelector(selectValue);
+  useEffect(() => {
+    if(value === 0) {
+      axios.get("http://localhost:5000/product/new").then((response) => {
+        setData(response.data)
+      })
+    }
+    else if(value === 1) {
+      axios.get("http://localhost:5000/product/best_sell").then((response) => {
+        setData(response.data)
+      })
+    }
+    else {
+      axios.get("http://localhost:5000/product/popular").then((response) => {
+        console.log(response.data)
+        setData(response.data)
+      })
+    }
+  }, [value])
+
   return (
     <div className={cx("wrapper")}>
-      {data.length !== 0 && <SliderItem imgList={data[value]} />}
+      <SliderItem imgList={data} />
     </div>
   );
 }

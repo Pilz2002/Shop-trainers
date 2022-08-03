@@ -6,13 +6,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const cx = classNames.bind(styles);
 
-function ButtonTippy({ children, icon, placement="bottom", label }) {
+function ButtonTippy({ children, icon, placement="bottom", label, onShow = () => {} }) {
   return (
     <div className={cx("wrapper")}>
       <Tippy
         render={(attrs) => <Popper>{children}</Popper>}
         placement={placement}
         interactive
+        onShow={onShow}
       >
         <div className={cx("container")}>
           <button>

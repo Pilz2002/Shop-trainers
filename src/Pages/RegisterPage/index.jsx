@@ -2,9 +2,10 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "../components";
-
+import { useAlert } from "@/hooks"
 
 function RegisterPage() {
+  const alert = useAlert()
   const navigate = useNavigate();
   const [registerInfo, setRegisterInfo] = useState({
     email: "",
@@ -23,7 +24,7 @@ function RegisterPage() {
       axios.post("http://localhost:5000/auth/register", { password, email, userName })
       .then(response => {
         if(response.data.message) {
-          alert(response.data.message);
+          alert(response.data.message, "error");
         }
         else {
           return axios.post("http://localhost:5000/user/create", {email, userName, loginId: response.data._id})
@@ -31,6 +32,7 @@ function RegisterPage() {
       })
       .then(response => {
         if(response) {
+          alert("Đăng kí thành công")
           navigate("/login", { replace: true })
         }
       })
@@ -38,7 +40,7 @@ function RegisterPage() {
         console.log(err)
       })
     } else {
-      alert("Vui lòng nhập đúng mật khẩu");
+      alert("Vui lòng nhập đúng mật khẩu", "error");
     }
   };
   const inputFields = [

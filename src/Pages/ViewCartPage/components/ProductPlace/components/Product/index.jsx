@@ -1,21 +1,16 @@
-import { removeProduct } from "@/Pages/Cart/cartSlice";
+
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames/bind";
-import { useDispatch } from "react-redux";
 import styles from "./Product.module.scss";
 
 const cx = classNames.bind(styles);
 
-function Product({ url, name, price, amount, index }) {
-  const dispatch = useDispatch()
-  const handleRemoveProduct = () => {
-    dispatch(removeProduct(index))
-  }
+function Product({ url, name, price, amount, onClick = () => {} }) {
   return (
     <div className={cx("wrapper")}>
       <div className={cx("product")}>
-        <button onClick={handleRemoveProduct}>
+        <button onClick={onClick}>
           <FontAwesomeIcon icon={faXmark} />
         </button>
         <div className={cx("container")}>

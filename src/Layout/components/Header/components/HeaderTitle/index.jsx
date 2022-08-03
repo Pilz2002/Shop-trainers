@@ -1,4 +1,5 @@
-import { removeProduct, selectListProduct } from "@/Pages/Cart/cartSlice";
+import { useAlert } from "@/hooks";
+
 import { logout, selectIsLogin, selectUserInfo } from "@/Pages/LoginPage/loginPageSlice";
 import { getBeforeUrl } from "@/Pages/pagesSlice";
 import {
@@ -9,8 +10,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "@mui/material";
+import axios from "axios";
 import className from "classnames/bind";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import logo from "./assets/logo-mona.png";
@@ -20,23 +22,45 @@ import styles from "./HeaderTitle.module.scss";
 const cx = className.bind(styles);
 
 function HeaderTitle() {
+  const alert = useAlert();
   const dispatch = useDispatch();
-  const listProduct = useSelector(selectListProduct);
   const isLogin = useSelector(selectIsLogin);
   const userInfo = useSelector(selectUserInfo);
-  useEffect(() => {
-    dispatch(getBeforeUrl(window.location.pathname));
+  const loginId = userInfo._id;
+  const [data, setData] = useState([]);
+  const [show, setShow] = useState(false)
 
-  }, [dispatch]);
+  const callApi = useCallback(() => {
+    axios.get(`http://localhost:5000/user/me/${loginId}`).then((response) => {
+      const data = response.data;
+      const orders = data.order;
+      setData(orders);
+    });
+  }, [loginId]);
 
   const handleRemoveProduct = (index) => {
-    dispatch(removeProduct(index));
+    axios.put(`http://localhost:5000/user/cancel_order/${loginId}`, {index}).then((response) => {
+      callApi();
+      alert("Xoá thành công");
+    });
   };
 
   const handleLogout = () => {
+    alert("Đăng xuất thành công", "success");
     dispatch(logout());
   };
 
+  const handleSetShow = () => {
+    setShow(prev => !prev)
+  }
+
+  useEffect(() => {
+    dispatch(getBeforeUrl(window.location.pathname));
+  }, [dispatch]);
+
+  useEffect(() => {
+    callApi();
+  }, [callApi, show]);
   return (
     <div className={cx("header-title")}>
       <div className={cx("logo")}>
@@ -50,7 +74,7 @@ function HeaderTitle() {
       </div>
       <div className={cx("login-resgister")}>
         {isLogin ? (
-          <ButtonTippy icon={faUserLarge} label={userInfo.userName}>
+          <ButtonTippy icon={faUserLarge} label={userInfo.userName} >
             <div className={cx("user")}>
               <Link to="/user/order" className="user-item">
                 <Button className={cx("button")}>Đơn hàng</Button>
@@ -84,10 +108,10 @@ function HeaderTitle() {
           </>
         )}
       </div>
-      <ButtonTippy icon={faCartShopping} placement="bottom-start">
-        {listProduct.length !== 0 ? (
+      <ButtonTippy icon={faCartShopping} placement="bottom-start" onShow={handleSetShow} >
+        {data.length !== 0 ? (
           <div className={cx("container")}>
-            {listProduct.map((item, index) => {
+            {data.map((item, index) => {
               return (
                 <div className={cx("item")} key={index}>
                   <div className={cx("img-product")}>

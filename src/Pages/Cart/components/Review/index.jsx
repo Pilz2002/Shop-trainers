@@ -1,27 +1,56 @@
+import { selectUserInfo } from "@/Pages/LoginPage/loginPageSlice";
+import { Avatar, Button, Rating } from "@mui/material";
+import axios from "axios";
 import classNames from "classnames/bind";
-import styles from "./Review.module.scss";
-import { Rating, Avatar, Button } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { UserReview } from "./components";
+import styles from "./Review.module.scss";
 
 const cx = classNames.bind(styles);
 
-function Review() {
-  const [listFeelBack, setListFeelBack] = useState([])
-  console.log("🚀 ~ file: index.jsx ~ line 11 ~ Review ~ listFeelBack", listFeelBack)
+function Review({ productId }) {
+  const loginInfo = useSelector(selectUserInfo);
+  const loginId = loginInfo._id;
   const [value, setValue] = useState(0);
-  const [feelback, setFeelback] = useState('')
+  const [feedback, setFeedback] = useState("");
+  const [userInfo, setUserInfo] = useState({});
+  const [comment, setComment] = useState([]);
+
+  const callApi = useCallback(() => {
+    axios.get(`http://localhost:5000/comment/get_comment/${productId}`).then((response) => {
+      setComment(() => {
+        const data = response.data;
+        return data.comments;
+      });
+    });
+  }, [productId]);
   const handleSubmitFeelBack = () => {
-    setListFeelBack(prevs => {
-      return [...prevs, {
-        rating: value,
-        feelback
-      }]
-    })
-  }
+    axios
+      .put(`http://localhost:5000/comment/post/${productId}`, {
+        comment: feedback,
+        rate: value,
+        userId: userInfo._id,
+        userName: userInfo.userName,
+      })
+      .then((response) => {
+        callApi();
+        setFeedback("");
+        setValue(0);
+      });
+  };
   const handleInputFeelBack = (e) => {
-    setFeelback(e.target.value)
-  }
+    setFeedback(e.target.value);
+  };
+  useEffect(() => {
+    axios.get(`http://localhost:5000/user/me/${loginId}`).then((response) => {
+      setUserInfo(response.data);
+    });
+  }, [loginId]);
+  useEffect(() => {
+    callApi();
+  }, [callApi]);
+
   return (
     <div className={cx("wrapper")}>
       <h3 className={cx("title")}>Đánh giá sản phẩm</h3>
@@ -35,17 +64,19 @@ function Review() {
           className={cx("rating")}
         />
         <div className={cx("container")}>
-          <Avatar>V</Avatar>
-          <input placeholder="Nhập đánh giá" onChange={handleInputFeelBack} value={feelback} />
-          <Button variant="contained" onClick={handleSubmitFeelBack}>Gửi</Button>
+          <Avatar>{String(userInfo.userName)[0].toUpperCase()}</Avatar>
+          <input placeholder="Nhập đánh giá" onChange={handleInputFeelBack} value={feedback} />
+          <Button variant="contained" onClick={handleSubmitFeelBack}>
+            Gửi
+          </Button>
         </div>
       </div>
-      <div className={cx('users-review')}>
+      <div className={cx("users-review")}>
         <h3 className={cx("feelback-title")}>Đánh giá</h3>
-        { listFeelBack.map((item, index) => {
-          const { rating, feelback } = item
-          return <UserReview rating={rating} key={index} feelback={feelback} />
-        }) }
+        {comment.map((item, index) => {
+          const { rate, comment, userName } = item;
+          return <UserReview rating={rate} key={index} feedback={comment} userName={userName} />;
+        })}
       </div>
     </div>
   );

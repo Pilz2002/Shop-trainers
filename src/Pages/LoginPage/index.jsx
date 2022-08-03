@@ -3,10 +3,11 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "../components";
 import { login } from "./loginPageSlice";
+import { useAlert } from "@/hooks";
 import axios from "axios";
 
 function LoginPage() {
-
+  const alert = useAlert();
   const dispatch = useDispatch()
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({
@@ -23,9 +24,11 @@ function LoginPage() {
     axios.post("http://localhost:5000/auth/login",{ email, password })
     .then((response) => {
       if (response.data.message) {
-        alert(response.data.message);
+        alert(response.data.message, "error");
       } else {
         dispatch(login(response.data))
+        alert("Đăng nhập thành công", "success");
+
         navigate("/", { replace: true });
       }
     });

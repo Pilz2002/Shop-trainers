@@ -1,29 +1,36 @@
+import { useAlert } from "@/hooks";
+import {
+  decreaseAmount,
+  increaseAmount,
+  selectProduct
+} from "@/Pages/components/Product/productSlice";
+import { selectUserInfo } from "@/Pages/LoginPage/loginPageSlice";
+import axios from "axios";
 import classNames from "classnames/bind";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./MainContent.module.scss";
-import { useSelector, useDispatch } from "react-redux";
-import { selectProduct } from "@/Pages/components/Product/productSlice";
-import { increaseAmount, decreaseAmount } from "@/Pages/components/Product/productSlice";
-import { addProduct } from "../../cartSlice";
 
 const cx = classNames.bind(styles);
 
 function MainContent() {
+  const loginInfo = useSelector(selectUserInfo);
+  const loginId = loginInfo._id;
+  const alert = useAlert();
   const dispatch = useDispatch();
   const productInfo = useSelector(selectProduct);
   const { url, name, price, amount } = productInfo;
   const handleAddProduct = () => {
-    dispatch(addProduct({
-      url,
-      name,
-      price,
-      amount
-    }))
+    axios
+        .put(`http://localhost:5000/user/order/${loginId}`, {url, name, price, amount})
+        .then((response) => {
+          alert("Thêm sản phẩm thành công, bạn có thể xem thông tin sản phẩm tại giỏ hàng");
+        });
   };
   const handleDecreaseAmount = () => {
-    dispatch(decreaseAmount())
+    dispatch(decreaseAmount());
   };
   const handleIncreaseAmount = () => {
-    dispatch(increaseAmount())
+    dispatch(increaseAmount());
   };
   return (
     <div className={cx("wrapper")}>

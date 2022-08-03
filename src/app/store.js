@@ -6,6 +6,7 @@ import loginPageReducer from "@/Pages/LoginPage/loginPageSlice";
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 import rootSaga from "./rootSaga";
+import rootReducer from "./rootReducer";
 import pagesReducer from "@/Pages/pagesSlice";
 const sagaMiddleware = createSagaMiddleware();
 const middleware = [...getDefaultMiddleware({ thunk: false }), sagaMiddleware];
@@ -17,7 +18,8 @@ export const store = configureStore({
     productReducer,
     cartReducer,
     pagesReducer,
-    loginPageReducer
+    loginPageReducer,
+    rootReducer
   },
   middleware,
 });

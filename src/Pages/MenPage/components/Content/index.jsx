@@ -11,7 +11,7 @@ function Content({ contentItems }) {
       <Header />
       <PaginationContent itemsPerPage={8}>
       { contentItems.map((item, index) => {
-        return <Product url={item.url} name={item.name} price={item.price} key={index} />
+        return <Product url={item.url} name={item.name} price={item.price} key={index} productId={item.productId} />
       }) }
       </PaginationContent>
     </div>

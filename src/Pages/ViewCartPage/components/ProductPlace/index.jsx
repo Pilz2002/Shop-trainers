@@ -1,31 +1,52 @@
-import { selectListProduct } from "@/Pages/Cart/cartSlice";
+import { selectUserInfo } from "@/Pages/LoginPage/loginPageSlice";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, TextField } from "@mui/material";
 import classNames from "classnames/bind";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Product } from "./components";
 import styles from "./ProductPlace.module.scss";
+import { useAlert } from "@/hooks";
+import axios from "axios";
 
 const cx = classNames.bind(styles);
 
 function ProductPlace() {
-  const listProduct = useSelector(selectListProduct);
+  const alert = useAlert()
+  const loginInfo = useSelector(selectUserInfo)
+  const loginId = loginInfo._id
+  const [data, setData] = useState([])
   const [total, setTotal] = useState(() => {
-    return listProduct.reduce((total, currValue) => {
+    return data.reduce((total, currValue) => {
       return total + currValue.price * currValue.amount;
     }, 0);
   });
+  const callApi = useCallback(() => {
+    axios.get(`http://localhost:5000/user/me/${loginId}`).then((response) => {
+      const data = response.data
+      setData(data.order)
+    })
+  }, [loginId])
+
+  const handleCancelProduct = (index) => {
+    axios.put(`http://localhost:5000/user/cancel_order/${loginId}`, {index}).then((response) => {
+      callApi();
+      alert("Xoá thành công");
+    });
+  }
+
   useEffect(() => {
-    const total = listProduct.reduce(
+    const total = data.reduce(
       (total, currValue) => total + currValue.price * currValue.amount,
       0
     );
     setTotal(total);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listProduct.length]);
+  }, [data]);
+  useEffect(() => {
+    callApi()
+  }, [callApi])
   return (
     <div className={cx("wrapper")}>
       <div className={cx("title")}>
@@ -35,7 +56,7 @@ function ProductPlace() {
         <h4>Tổng</h4>
       </div>
       <div className={cx("container")}>
-        {listProduct.map((item, index) => {
+        {data.map((item, index) => {
           const { url, price, amount, name } = item;
           return (
             <Product
@@ -44,7 +65,7 @@ function ProductPlace() {
               price={price}
               amount={amount}
               name={name}
-              index={index}
+              onClick={() => handleCancelProduct(index)}
             />
           );
         })}

@@ -10,16 +10,15 @@ const publicRoutes = [
   { path: "/women", element: MenPage },
   { path: "/children", element: MenPage },
   { path: "/other", element: MenPage },
-  { path: "/cart", element: Cart },
-  { path: "/view_cart", element: ViewCartPage },
-  { path: "/user/*", element: UserPage },
-  { path: "/payment", element: PaymentPage },
-
-  { path: '/*', element: HomePage }
+  { path: '/*', element: HomePage },
+  
 ];
 
 const privateRoutes = [
-
+  { path: "/user/*", element: UserPage },
+  { path: "/cart", element: Cart },
+  { path: "/view_cart", element: ViewCartPage },
+  { path: "/payment", element: PaymentPage },
 ];
 
 export { publicRoutes, privateRoutes };

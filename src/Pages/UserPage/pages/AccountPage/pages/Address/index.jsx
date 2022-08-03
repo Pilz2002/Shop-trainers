@@ -1,3 +1,4 @@
+import { useAlert } from "@/hooks";
 import { selectUserInfo } from "@/Pages/LoginPage/loginPageSlice";
 import { MainLayout } from "@/Pages/UserPage/pages/layout";
 import axios from "axios";
@@ -11,6 +12,7 @@ import { Modal, UserInfo } from "./components";
 const cx = classNames.bind(styles);
 
 function Address() {
+  const alert = useAlert();
   // get loginId
   const userInfo = useSelector(selectUserInfo);
   const loginId = userInfo._id;
@@ -45,7 +47,9 @@ function Address() {
         return { ...item, isDefault: false };
       });
       arr[index].isDefault = true;
-      axios.put(`http://localhost:5000/user/update/${loginId}`, { address: arr });
+      axios
+        .put(`http://localhost:5000/user/update/${loginId}`, { address: arr })
+        .then(() => callApi());
       return arr;
     });
   };
@@ -68,29 +72,39 @@ function Address() {
       } else {
         arr = [...prev, newData];
       }
-      axios.put(`http://localhost:5000/user/update/${loginId}`, { address: arr });
+      axios
+        .put(`http://localhost:5000/user/update/${loginId}`, { address: arr })
+        .then((response) => {
+          handleCloseModal();
+          alert("Thêm địa chỉ thành công");
+        });
       return arr;
     });
   };
   const handleSaveFixInfo = (newData) => {
-
     const { index, fullName, phoneNumber, isDefault, address } = newData;
     const data = { fullName, phoneNumber, isDefault, address };
     setData((prev) => {
       prev.splice(index, 1, data);
-      let arr = []
-      if(isDefault) {
+      let arr = [];
+      if (isDefault) {
         arr = prev.map((item) => {
           return { ...item, isDefault: false };
         });
         arr[index].isDefault = isDefault;
-      }
-      else {
-        arr = [...prev]
+      } else {
+        arr = [...prev];
       }
       axios
         .put(`http://localhost:5000/user/update/${loginId}`, { address: arr })
-        .then(() => callApi());
+        .then(() => {
+          callApi();
+          alert("Cập nhập thành công");
+          handleCloseModal();
+        })
+        .catch((err) => {
+          alert("Cập nhập thất bại", "error");
+        });
       return arr;
     });
   };
@@ -100,8 +114,8 @@ function Address() {
   };
   const handleDelAddress = (index) => {
     setData((prev) => {
-      const arr = prev.filter((item, i) => i !== index)
-      
+      const arr = prev.filter((item, i) => i !== index);
+
       axios.put(`http://localhost:5000/user/update/${loginId}`, { address: arr }).then(() => {
         callApi();
       });
@@ -144,7 +158,7 @@ function Address() {
                         phoneNumber,
                         address,
                         isDefault: userInfo.isDefault,
-                        onChange: handleSaveFixInfo
+                        onChange: handleSaveFixInfo,
                       })
                     }
                   >

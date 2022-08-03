@@ -3,10 +3,19 @@ import { MainLayout } from "../../../layout";
 import { Button, Header, Input } from "../components";
 import styles from "./ChangePassword.module.scss";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { selectUserInfo } from "@/Pages/LoginPage/loginPageSlice";
+import axios from "axios";
+import { useAlert } from "@/hooks";
 
 const cx = classNames.bind(styles);
 
 function ChangePassword() {
+  const alert = useAlert()
+  // get loginId
+  const userInfo = useSelector(selectUserInfo);
+  const loginId = userInfo._id;
+
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
@@ -20,6 +29,28 @@ function ChangePassword() {
   const handleInputPassword = (e) => {
     setPassword(e.target.value);
   };
+  const handleSubmit = () => {
+    axios.get(`http://localhost:5000/auth/me/${loginId}`).then((response) => {
+      if(password === response.data.password) {
+        if(newPassword === rePassword) {
+          axios.put(`http://localhost:5000/auth/update/${loginId}`, { password: newPassword }).then((response) => {
+            setNewPassword("")
+            setPassword("")
+            setRePassword("")
+            alert("Thành đổi mật khẩu thành công")
+          });
+        }
+        else {
+          alert("Mật khẩu không trùng khớp", "error")
+        }
+      }
+      else {
+        alert("Mật khẩu hiện tại không chính xác", "error")
+      }
+    })
+
+    
+  }
 
   return (
     <div className={cx("wrapper")}>
@@ -46,7 +77,7 @@ function ChangePassword() {
           value={rePassword}
           onChange={handleInputRePassword}
         />
-        <Button style={{ marginLeft: "25%" }}>Xác nhận</Button>
+        <Button style={{ marginLeft: "25%" }} onClick={handleSubmit}>Xác nhận</Button>
       </MainLayout>
     </div>
   );

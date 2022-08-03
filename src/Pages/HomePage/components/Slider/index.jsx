@@ -1,21 +1,16 @@
-import axios from "axios";
 import classNames from "classnames/bind";
-import { useEffect, useState } from "react";
 import { Autoplay, EffectFade, Navigation, Pagination } from "swiper";
 import "swiper/css";
 import "swiper/css/bundle";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { slide1, slide2, slide3 } from "./assets/images/Slider";
+
 import styles from "./Slider.module.scss";
 
 const cx = classNames.bind(styles);
 
 function Slider() {
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    axios.get("https://shop-trainers-api.herokuapp.com/api/banner").then((response) => {
-      setData(response.data);
-    });
-  }, []);
+  const data = [slide1, slide2, slide3];
   return (
     <div className={cx("wrapper")}>
       <Swiper
@@ -37,7 +32,7 @@ function Slider() {
         {data.map((item, index) => {
           return (
             <SwiperSlide key={index}>
-              <img src={item.url} alt="" />
+              <img src={item} alt="" />
             </SwiperSlide>
           );
         })}

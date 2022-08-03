@@ -1,7 +1,7 @@
 .wrapper {
   display: flex;
-  justify-content: center;
   flex-direction: column;
+  align-items: center;
   padding: 20px;
   position: relative;
   width: 100%;
@@ -26,30 +26,30 @@
     }
   }
   button {
+    width: 150px;
+    padding: 6px 12px;
+
     visibility: hidden;
     font-weight: 200;
-
     border-radius: 6px;
     border-color: transparent;
     color: #fff;
     background-color: #ff0000;
     &:hover {
       background-color: #ec2828;
-
     }
     &:active {
       background-color: #ff0000;
-
     }
   }
-  &:hover > button{
+  &:hover > button {
     visibility: visible;
   }
   .discount {
     color: #ced4da;
     font-weight: 700;
     font-size: 16px;
-    background-color: #C30005;
+    background-color: #c30005;
     padding: 10px 4.5px;
     border-radius: 50%;
     position: absolute;
@@ -59,9 +59,6 @@
 }
 
 .link {
+  text-align: center;
   color: #fff;
-  display: flex;
-  padding: 6px 12px;
-  flex: 1;
-  justify-content: center;
 }

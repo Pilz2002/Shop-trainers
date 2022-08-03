@@ -10,29 +10,30 @@ const cx = classNames.bind(styles);
 function MenPage() {
   const [data, setData] = useState([])
   useEffect(() => {
-    axios.get("https://shop-trainers-api.herokuapp.com/data").then((response) => {
-      setData([...response.data.product.classic, ...response.data.product.chuck07s])
+    axios.get("http://localhost:5000/product/adult").then((response) => {
+      setData(response.data)
     })
   }, [])
   const sidebarData = [
     {
       title: "SẢN PHẨM",
       content: data.slice(0, 3).map((item, index) => {
-        return { url: item.url, title: "Chuck Taylor Classic", price: 1200000 }
+        return { url: item.thumbnail, title: item.name, price: 1200000 }
       }),
     },
     {
       title: "BÀI VIẾT MỚI NHẤT",
       content: data.slice(0, 3).map((item, index) => {
-        return { url: item.url, title: "Chuck Taylor Classic" }
+        return { url: item.thumbnail, title: item.name }
       }),
     }
   ];
   const contentData = data.map((item, index) => {
     return {
-      url: item.url,
-      name: "Chuck Taylor Classic",
-      price: 100000 * index
+      url: item.thumbnail,
+      name: item.name,
+      price: item.price,
+      productId: item._id
     }
   })
 

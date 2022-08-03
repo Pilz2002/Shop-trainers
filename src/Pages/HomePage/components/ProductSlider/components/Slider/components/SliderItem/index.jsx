@@ -9,7 +9,6 @@ import "swiper/css/bundle";
 const cx = classNames.bind(styles);
 
 function SliderItem({ imgList }) {
-  
   return (
     <div className={cx("wrapper")}>
       <Swiper
@@ -28,10 +27,12 @@ function SliderItem({ imgList }) {
         {imgList.map((item, index) => {
           return (
             <SwiperSlide key={index}>
-              <Product 
-                url={item}
-                name="Chuck Taylor Classic"
-                price={1200000}
+              <Product
+                url={item.thumbnail}
+                name={item.name}
+                price={item.price}
+                discount={item.discount}
+                productId={item._id}
               />
             </SwiperSlide>
           );

@@ -6,16 +6,16 @@ import { Link } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
-function Product({ url, name, price, discount = null }) {
+function Product({ url, name, price, discount, productId }) {
   const dispatch = useDispatch();
   const handleAddProduct = () => {
-    const productPrice = discount === null ? price : Math.floor(price * Number(discount / 100))
+    const productPrice = !!discount ? Math.floor(price * Number(discount / 100)) : price;
     dispatch(
       addProduct({
         url,
         name,
         price: productPrice,
-        amount: 1
+        amount: 1,
       })
     );
   };
@@ -26,8 +26,12 @@ function Product({ url, name, price, discount = null }) {
         <p className={cx("name")}>{name}</p>
         <p className={cx("price")}>{`${Number(price).toLocaleString()} đ`}</p>
       </div>
-      <button onClick={handleAddProduct}><Link to='/cart' className={cx("link")}>Thêm vào giỏ hàng</Link></button>
-      {discount && <div className={cx("discount")}>{`${discount}%`}</div>}
+      <button onClick={handleAddProduct}>
+        <Link to="/cart" className={cx("link")} state={productId}>
+          Thêm vào giỏ hàng
+        </Link>
+      </button>
+      {!!discount && <div className={cx("discount")}>{`${discount}%`}</div>}
     </div>
   );
 }

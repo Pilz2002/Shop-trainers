@@ -5,10 +5,13 @@ import classNames from "classnames/bind";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Button, Header, Input, Text } from "../components";
+import { useAlert } from "@/hooks";
 import styles from "./Profile.module.scss";
+
 const cx = classNames.bind(styles);
 
 function Profile() {
+  const alert = useAlert()
   const userInfo = useSelector(selectUserInfo);
   const loginId = userInfo._id;
   const [userName, setUserName] = useState("");
@@ -36,6 +39,11 @@ function Profile() {
       birdDate,
       phoneNumber,
       fullName
+    }).then(response => {
+      alert("Cập nhập thành công")
+    }).catch(err => {
+      alert("Cập nhập thất bại", "error")
+
     });
   };
   useEffect(() => {
