@@ -16,9 +16,9 @@ const publicRoutes = [
 
 const privateRoutes = [
   { path: "/user/*", element: UserPage },
+  { path: "/payment", element: PaymentPage },
   { path: "/cart", element: Cart },
   { path: "/view_cart", element: ViewCartPage },
-  { path: "/payment", element: PaymentPage },
 ];
 
 export { publicRoutes, privateRoutes };

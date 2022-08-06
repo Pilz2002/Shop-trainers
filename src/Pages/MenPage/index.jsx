@@ -10,7 +10,7 @@ const cx = classNames.bind(styles);
 function MenPage() {
   const [data, setData] = useState([])
   useEffect(() => {
-    axios.get("http://localhost:5000/product/adult").then((response) => {
+    axios.get("https://shop-trainer-backend.herokuapp.com/product/adult").then((response) => {
       setData(response.data)
     })
   }, [])

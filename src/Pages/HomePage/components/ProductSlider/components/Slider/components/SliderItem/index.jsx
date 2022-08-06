@@ -26,7 +26,7 @@ function SliderItem({ imgList }) {
       >
         {imgList.map((item, index) => {
           return (
-            <SwiperSlide key={index}>
+            <SwiperSlide key={item._id}>
               <Product
                 url={item.thumbnail}
                 name={item.name}

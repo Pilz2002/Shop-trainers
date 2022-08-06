@@ -31,7 +31,7 @@ function HeaderTitle() {
   const [show, setShow] = useState(false)
 
   const callApi = useCallback(() => {
-    axios.get(`http://localhost:5000/user/me/${loginId}`).then((response) => {
+    axios.get(`https://shop-trainer-backend.herokuapp.com/user/me/${loginId}`).then((response) => {
       const data = response.data;
       const orders = data.order;
       setData(orders);
@@ -39,7 +39,7 @@ function HeaderTitle() {
   }, [loginId]);
 
   const handleRemoveProduct = (index) => {
-    axios.put(`http://localhost:5000/user/cancel_order/${loginId}`, {index}).then((response) => {
+    axios.put(`https://shop-trainer-backend.herokuapp.com/user/cancel_order/${loginId}`, {index}).then((response) => {
       callApi();
       alert("Xoá thành công");
     });

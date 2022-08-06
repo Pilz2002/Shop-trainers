@@ -1,0 +1,19 @@
+
+.wrapper {
+  padding-left: 100px;
+  position: relative;
+
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-bottom: 1px solid #ccc;
+
+}

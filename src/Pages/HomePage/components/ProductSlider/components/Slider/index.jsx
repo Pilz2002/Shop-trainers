@@ -13,17 +13,17 @@ function Slider() {
   const value = useSelector(selectValue);
   useEffect(() => {
     if(value === 0) {
-      axios.get("http://localhost:5000/product/new").then((response) => {
+      axios.get("https://shop-trainer-backend.herokuapp.com/product/new").then((response) => {
         setData(response.data)
       })
     }
     else if(value === 1) {
-      axios.get("http://localhost:5000/product/best_sell").then((response) => {
+      axios.get("https://shop-trainer-backend.herokuapp.com/product/best_sell").then((response) => {
         setData(response.data)
       })
     }
     else {
-      axios.get("http://localhost:5000/product/popular").then((response) => {
+      axios.get("https://shop-trainer-backend.herokuapp.com/product/popular").then((response) => {
         console.log(response.data)
         setData(response.data)
       })

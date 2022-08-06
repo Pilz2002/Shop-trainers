@@ -1,29 +1,44 @@
 import { Button } from "@mui/material";
-import classNames from "classnames/bind"; 
-import styles from './Product.module.scss'
+import classNames from "classnames/bind";
+import styles from "./Product.module.scss";
 
-const cx = classNames.bind(styles)  
+const cx = classNames.bind(styles);
 
-function Product() {
-  return ( 
-    <div className={cx('wrapper')}>
-      <div className={cx('header')}>
-        <h4 className={cx('status')}>
+function Product({ name, price, amount, status = 0, url, onClick }) {
+  let statusText = "";
+  if (status === 0) {
+    statusText = "Chờ xác nhận";
+  } else if (status === 1) {
+    statusText = "Chờ lấy hàng";
+  } else if (status === 2) {
+    statusText = "Đang giao";
+  } else {
+    statusText = "Đã giao";
+  }
+  return (
+    <div className={cx("wrapper")}>
+      <div className={cx("header")}>
+        <h4 className={cx("status")}>
           <span>Trạng thái: </span>
-          Đang chờ lấy hàng
+          {statusText}
         </h4>
       </div>
-      <div className={cx('product')}>
-        <div className={cx('img')}>
-          <img src='https://picsum.photos/200/300' alt=''/>
+      <div className={cx("product")}>
+        <div className={cx("img")}>
+          <img src={url} alt="" />
         </div>
-        <div className={cx('info')}>
-          <p className={cx('name')}>
-          Sách - Combo 7 Thói Quen Của Bạn Trẻ Thành Đạt 50893 + Thực Hành 7 Thói Quen Của Bạn Trẻ Thành Đạt 49699 - First News
-          </p>
-          <p className={cx("amount")}>Số lượng: 1</p>
-          <h5 className={cx("price")}><span>Giá: </span>{Number(10000).toLocaleString()} đ</h5>
-          <div className={cx("cancel-btn")}><Button variant="contained" color="error">Huỷ đơn hàng</Button></div>
+        <div className={cx("info")}>
+          <p className={cx("name")}>{name}</p>
+          <p className={cx("amount")}>Số lượng: {amount}</p>
+          <h5 className={cx("price")}>
+            <span>Giá: </span>
+            {Number(price).toLocaleString()} đ
+          </h5>
+          <div className={cx("cancel-btn")}>
+            <Button variant="contained" color="error" onClick={onClick}>
+              Huỷ đơn hàng
+            </Button>
+          </div>
         </div>
       </div>
     </div>

@@ -8,8 +8,7 @@ function WrapperPage({ children }) {
   const location = useLocation()
   useEffect(() => {
     dispatch(getCurrUrl(location.pathname))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname])
+  }, [location.pathname, dispatch])
 
   return ( 
     <div>{children}</div>

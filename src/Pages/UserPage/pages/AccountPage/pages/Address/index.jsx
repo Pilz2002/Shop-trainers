@@ -26,7 +26,7 @@ function Address() {
 
   const callApi = useCallback(() => {
     axios
-      .get(`http://localhost:5000/user/me/${loginId}`)
+      .get(`https://shop-trainer-backend.herokuapp.com/user/me/${loginId}`)
       .then((response) => {
         const { address, fullName, phoneNumber } = response.data;
         if (fullName) {
@@ -48,7 +48,7 @@ function Address() {
       });
       arr[index].isDefault = true;
       axios
-        .put(`http://localhost:5000/user/update/${loginId}`, { address: arr })
+        .put(`https://shop-trainer-backend.herokuapp.com/user/update/${loginId}`, { address: arr })
         .then(() => callApi());
       return arr;
     });
@@ -73,7 +73,7 @@ function Address() {
         arr = [...prev, newData];
       }
       axios
-        .put(`http://localhost:5000/user/update/${loginId}`, { address: arr })
+        .put(`https://shop-trainer-backend.herokuapp.com/user/update/${loginId}`, { address: arr })
         .then((response) => {
           handleCloseModal();
           alert("Thêm địa chỉ thành công");
@@ -96,7 +96,7 @@ function Address() {
         arr = [...prev];
       }
       axios
-        .put(`http://localhost:5000/user/update/${loginId}`, { address: arr })
+        .put(`https://shop-trainer-backend.herokuapp.com/user/update/${loginId}`, { address: arr })
         .then(() => {
           callApi();
           alert("Cập nhập thành công");
@@ -116,7 +116,7 @@ function Address() {
     setData((prev) => {
       const arr = prev.filter((item, i) => i !== index);
 
-      axios.put(`http://localhost:5000/user/update/${loginId}`, { address: arr }).then(() => {
+      axios.put(`https://shop-trainer-backend.herokuapp.com/user/update/${loginId}`, { address: arr }).then(() => {
         callApi();
       });
       return arr;

@@ -18,16 +18,19 @@ function Review({ productId }) {
   const [comment, setComment] = useState([]);
 
   const callApi = useCallback(() => {
-    axios.get(`http://localhost:5000/comment/get_comment/${productId}`).then((response) => {
+    axios.get(`https://shop-trainer-backend.herokuapp.com/comment/get_comment/${productId}`).then((response) => {
       setComment(() => {
         const data = response.data;
-        return data.comments;
+        if(data?.comments) {
+          return data.comments;
+        }
+        return []
       });
     });
   }, [productId]);
   const handleSubmitFeelBack = () => {
     axios
-      .put(`http://localhost:5000/comment/post/${productId}`, {
+      .put(`https://shop-trainer-backend.herokuapp.com/comment/post/${productId}`, {
         comment: feedback,
         rate: value,
         userId: userInfo._id,
@@ -43,7 +46,7 @@ function Review({ productId }) {
     setFeedback(e.target.value);
   };
   useEffect(() => {
-    axios.get(`http://localhost:5000/user/me/${loginId}`).then((response) => {
+    axios.get(`https://shop-trainer-backend.herokuapp.com/user/me/${loginId}`).then((response) => {
       setUserInfo(response.data);
     });
   }, [loginId]);

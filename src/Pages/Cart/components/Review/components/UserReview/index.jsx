@@ -9,7 +9,7 @@ function UserReview({ rating, userName, feedback }) {
     <div className={cx("wrapper")}>
       <div className={cx("user")}>
         <div className={cx("avatar")}>
-          <Avatar>{userName[0]}</Avatar>
+          <Avatar>{userName[0].toUpperCase()}</Avatar>
         </div>
         <div className={cx("container")}>
           <div className={cx("user-name")}>{userName}</div>

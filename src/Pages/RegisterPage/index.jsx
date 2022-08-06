@@ -21,14 +21,17 @@ function RegisterPage() {
   const handleSubmit = () => {
     const { password, repassword, email, userName } = registerInfo;
     if (password === repassword) {
-      axios.post("http://localhost:5000/auth/register", { password, email, userName })
+      axios.post("https://shop-trainer-backend.herokuapp.com/auth/register", { password, email, userName })
       .then(response => {
         if(response.data.message) {
           alert(response.data.message, "error");
         }
         else {
-          return axios.post("http://localhost:5000/user/create", {email, userName, loginId: response.data._id})
+          return axios.post("https://shop-trainer-backend.herokuapp.com/user/create", {email, userName, loginId: response.data._id})
         }
+      })
+      .then(response => {
+        return axios.post("https://shop-trainer-backend.herokuapp.com/order/create", {userId: response.data._id})
       })
       .then(response => {
         if(response) {

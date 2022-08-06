@@ -21,7 +21,7 @@ function LoginPage() {
   };
   const handleSubmit = () => {
     const { email, password } = userInfo;
-    axios.post("http://localhost:5000/auth/login",{ email, password })
+    axios.post("https://shop-trainer-backend.herokuapp.com/auth/login",{ email, password })
     .then((response) => {
       if (response.data.message) {
         alert(response.data.message, "error");

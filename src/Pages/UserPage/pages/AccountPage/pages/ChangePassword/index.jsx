@@ -30,10 +30,10 @@ function ChangePassword() {
     setPassword(e.target.value);
   };
   const handleSubmit = () => {
-    axios.get(`http://localhost:5000/auth/me/${loginId}`).then((response) => {
+    axios.get(`https://shop-trainer-backend.herokuapp.com/auth/me/${loginId}`).then((response) => {
       if(password === response.data.password) {
         if(newPassword === rePassword) {
-          axios.put(`http://localhost:5000/auth/update/${loginId}`, { password: newPassword }).then((response) => {
+          axios.put(`https://shop-trainer-backend.herokuapp.com/auth/update/${loginId}`, { password: newPassword }).then((response) => {
             setNewPassword("")
             setPassword("")
             setRePassword("")

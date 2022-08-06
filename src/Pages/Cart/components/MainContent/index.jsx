@@ -21,7 +21,7 @@ function MainContent() {
   const { url, name, price, amount } = productInfo;
   const handleAddProduct = () => {
     axios
-        .put(`http://localhost:5000/user/order/${loginId}`, {url, name, price, amount})
+        .put(`https://shop-trainer-backend.herokuapp.com/user/order/${loginId}`, {url, name, price, amount})
         .then((response) => {
           alert("Thêm sản phẩm thành công, bạn có thể xem thông tin sản phẩm tại giỏ hàng");
         });

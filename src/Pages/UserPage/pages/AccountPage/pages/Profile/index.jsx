@@ -34,7 +34,7 @@ function Profile() {
     setFullName(e.target.value);
   };
   const handleClickSave = () => {
-    axios.put(`http://localhost:5000/user/update/${loginId}`, {
+    axios.put(`https://shop-trainer-backend.herokuapp.com/user/update/${loginId}`, {
       gender: genderValue,
       birdDate,
       phoneNumber,
@@ -48,7 +48,7 @@ function Profile() {
   };
   useEffect(() => {
     axios
-    .get(`http://localhost:5000/user/me/${loginId}`)
+    .get(`https://shop-trainer-backend.herokuapp.com/user/me/${loginId}`)
     .then((response) => {
       const { userName, birdDate, phoneNumber, gender, email, fullName } = response.data;
       console.log(response.data);
