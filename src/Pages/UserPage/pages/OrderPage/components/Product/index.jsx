@@ -32,7 +32,7 @@ function Product({ name, price, amount, status = 0, url, onClick }) {
           <p className={cx("amount")}>Số lượng: {amount}</p>
           <h5 className={cx("price")}>
             <span>Giá: </span>
-            {Number(price).toLocaleString()} đ
+            {Number(price*amount).toLocaleString()} đ
           </h5>
           <div className={cx("cancel-btn")}>
             <Button variant="contained" color="error" onClick={onClick}>
