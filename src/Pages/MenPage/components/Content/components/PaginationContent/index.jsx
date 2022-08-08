@@ -61,7 +61,6 @@ function PaginationContent({ itemsPerPage, children }) {
       <Pagination
         count={pageCount}
         color="error"
-        
         onChange={handlePageClick}
         className={cx("pagination")}
       />

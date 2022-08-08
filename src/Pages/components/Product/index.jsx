@@ -21,7 +21,7 @@ function Product({ url, name, price, discount, productId }) {
   };
   return (
     <div className={cx("wrapper")}>
-      <img src={url} alt="" />
+      <div className={cx("img")}><img src={url} alt="" /></div>
       <div className={cx("info")}>
         <p className={cx("name")}>{name}</p>
         <p className={cx("price")}>{`${Number(price).toLocaleString()} đ`}</p>
