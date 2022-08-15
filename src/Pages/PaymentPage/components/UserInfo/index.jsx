@@ -26,15 +26,15 @@ function UserInfo() {
         <div className={cx("title")}>THÔNG TIN NGƯỜI NHẬN</div>
         <div className={cx("row")}>
           <span>Người nhận</span>
-          <span>{data.fullName}</span>
+          <span>{data?.fullName}</span>
         </div>
         <div className={cx("row")}>
           <span>Số điện thoại</span>
-          <span>{data.phoneNumber}</span>
+          <span>{data?.phoneNumber}</span>
         </div>
         <div className={cx("row")}>
           <span>Địa chỉ</span>
-          <span>{data.address}</span>
+          <span>{data?.address}</span>
         </div>
       </div>
       <Link to="/user/account/address">

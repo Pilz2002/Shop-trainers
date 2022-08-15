@@ -46,7 +46,10 @@ function ProductInfo() {
   useEffect(() => {
     axios.get(`https://shop-trainer-backend.herokuapp.com/user/me/${loginId}`).then((response) => {
       const data = response.data;
-      const orders = data.order;
+      let orders = []
+      if(data.order) {
+        orders = data.order;
+      }
       const total = orders.reduce((total, curr) => {
         return total + curr.price * curr.amount;
       }, 0);
