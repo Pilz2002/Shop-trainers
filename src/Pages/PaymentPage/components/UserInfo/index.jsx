@@ -17,7 +17,12 @@ function UserInfo() {
     axios.get(`https://shop-trainer-backend.herokuapp.com/user/me/${loginId}`).then((response) => {
       const data = response.data;
       const address = data.address.find((address) => address.isDefault === true);
-      setData(address);
+      if(address) {
+        setData(address);
+      }
+      else {
+        setData(data.address[0])
+      }
     });
   }, [loginId]);
   return (

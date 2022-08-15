@@ -24,7 +24,6 @@ function Slider() {
     }
     else {
       axios.get("https://shop-trainer-backend.herokuapp.com/product/popular").then((response) => {
-        console.log(response.data)
         setData(response.data)
       })
     }

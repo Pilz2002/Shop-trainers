@@ -33,8 +33,14 @@ function HeaderTitle() {
   const callApi = useCallback(() => {
     axios.get(`https://shop-trainer-backend.herokuapp.com/user/me/${loginId}`).then((response) => {
       const data = response.data;
-      const orders = data.order;
-      setData(orders);
+      let orders = [];
+      if(data?.order) {
+        orders = data.order;
+        setData(orders);
+      }
+      else {
+        setData(orders);
+      }
     });
   }, [loginId]);
 

@@ -10,12 +10,13 @@ import axios from "axios";
 import classNames from "classnames/bind";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import styles from "./ProductInfo.module.scss";
-import { Link } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
 function ProductInfo() {
+  const navigate = useNavigate();
   const alert = useAlert();
   const loginInfo = useSelector(selectUserInfo);
   const loginId = loginInfo._id;
@@ -27,27 +28,39 @@ function ProductInfo() {
   const handleChangeMethod = (e, value) => {
     setPaymentMethod(value);
   };
+
   const handleSubmit = () => {
-    const products = data.map((item) => {
-      return { name: item.name, price: item.price, amount: item.amount, status: 0, url: item.url };
-    });
-    axios
-      .put(`https://shop-trainer-backend.herokuapp.com/order/add_order/${loginId}`, {
-        paymentMethod,
-        address,
-        products,
-      })
-      .then((response) => {
-        axios.put(`https://shop-trainer-backend.herokuapp.com/user/cancel_all_order/${loginId}`).then((response) => {
-          alert("Đặt mua thành công");
-        });
+    if(address) {
+      const products = data.map((item) => {
+        return { name: item.name, price: item.price, amount: item.amount, status: 0, url: item.url };
       });
+      axios
+        .put(`https://shop-trainer-backend.herokuapp.com/order/add_order/${loginId}`, {
+          paymentMethod,
+          address,
+          products,
+        })
+        .then((response) => {
+          axios
+            .put(`https://shop-trainer-backend.herokuapp.com/user/cancel_all_order/${loginId}`)
+            .then((response) => {
+              alert("Đặt mua thành công");
+            });
+          navigate("/user/order");
+        });
+    }
+    else {
+      alert("Vui lòng nhập địa chỉ để thanh toán đơn hàng", "warning")
+      setTimeout(() => {
+        navigate("/user/account/address")
+      }, 1000)
+    }
   };
   useEffect(() => {
     axios.get(`https://shop-trainer-backend.herokuapp.com/user/me/${loginId}`).then((response) => {
       const data = response.data;
-      let orders = []
-      if(data.order) {
+      let orders = [];
+      if (data.order) {
         orders = data.order;
       }
       const total = orders.reduce((total, curr) => {
@@ -101,16 +114,15 @@ function ProductInfo() {
           />
         </RadioGroup>
       </FormControl>
-      <Link to="/">
-        <Button
-          variant="contained"
-          color="error"
-          style={{ marginTop: "20px", position: "absolute", right: 0 }}
-          onClick={handleSubmit}
-        >
-          Xác nhận
-        </Button>
-      </Link>
+
+      <Button
+        variant="contained"
+        color="error"
+        style={{ marginTop: "20px", position: "absolute", right: 0 }}
+        onClick={handleSubmit}
+      >
+        Xác nhận
+      </Button>
     </div>
   );
 }

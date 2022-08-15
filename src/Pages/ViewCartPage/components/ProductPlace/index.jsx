@@ -26,7 +26,7 @@ function ProductPlace() {
   const callApi = useCallback(() => {
     axios.get(`https://shop-trainer-backend.herokuapp.com/user/me/${loginId}`).then((response) => {
       const data = response.data
-      setData(data.order)
+      setData(data?.order)
     })
   }, [loginId])
 

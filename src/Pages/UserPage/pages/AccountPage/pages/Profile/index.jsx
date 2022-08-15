@@ -51,7 +51,6 @@ function Profile() {
     .get(`https://shop-trainer-backend.herokuapp.com/user/me/${loginId}`)
     .then((response) => {
       const { userName, birdDate, phoneNumber, gender, email, fullName } = response.data;
-      console.log(response.data);
       if (birdDate) {
         setBirdDate(birdDate);
       }
